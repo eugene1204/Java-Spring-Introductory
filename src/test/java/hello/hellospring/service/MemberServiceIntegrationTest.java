@@ -1,28 +1,26 @@
 package hello.hellospring.service;
 import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemoryMemberRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import hello.hellospring.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-class MemberServiceTest {
-    MemberService memberService;
-    MemoryMemberRepository memberRepository ;
-    @BeforeEach
-    public void beforeEach() {
-        memberRepository = new MemoryMemberRepository();
-        memberService = new MemberService(memberRepository);
-    }
-    @AfterEach
-    public void afterEach() {
-        memberRepository.clearStore();
-    }
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Transactional;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+@SpringBootTest
+@Transactional
+public class MemberServiceIntegrationTest {
+    @Autowired  MemberService memberService;
+    @Autowired
+    MemberRepository memberRepository ;
     @Test
+    @Commit
     void join() throws Exception{
         // given : 상황 주어짐
         Member member = new Member();
-        member.setName("hello");
+        member.setName("hello200");
         // when : 이걸 실행했을때
         Long saveId = memberService.join(member);
         // then : 이게 답으로 나와야함
@@ -47,11 +45,5 @@ class MemberServiceTest {
         IllegalStateException e = assertThrows(IllegalStateException.class,
                 () -> memberService.join(member2));
         assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-    }
-    @Test
-    void findMembers() {
-    }
-    @Test
-    void findOne() {
     }
 }
